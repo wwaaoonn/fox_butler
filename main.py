@@ -1,5 +1,9 @@
 from fastapi import FastAPI
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel  # リクエストbodyを定義するために必要
+
+import myclass
 
 app = FastAPI()
 
@@ -12,6 +16,13 @@ class UserName(BaseModel):
 class User(BaseModel):
     user_id: int
     user_name: UserName
+
+
+@app.post("/")
+async def create_response(payload: myclass.Payload):
+    encoded_payload = jsonable_encoder(payload)
+    print(type(encoded_payload))
+    return JSONResponse(content=encoded_payload)
 
 
 @app.get("/test")
