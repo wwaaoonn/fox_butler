@@ -14,7 +14,7 @@ class User(BaseModel):
     user_name: UserName
 
 
-@app.get("/")
+@app.get("/test")
 async def get_user():
     return {
         "user_id": 0,
@@ -25,6 +25,6 @@ async def get_user():
     }
 
 
-@app.post("/")
+@app.post("/test")
 async def create_user(user: User):
     return user
