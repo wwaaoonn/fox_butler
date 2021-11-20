@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel  # リクエストbodyを定義するために必要
+from pydantic import BaseModel
+# from starlette.routing import request_response  # リクエストbodyを定義するために必要
 
 import myclass
 
@@ -18,6 +19,53 @@ class User(BaseModel):
     user_name: UserName
 
 
+def get_request_type(dictionary):
+    """
+    リクエストタイプを取得する．
+
+    Parameters
+    ----------
+    dictionary: dict
+        payloadをdict型にエンコードしたもの．
+
+    Returns
+    ----------
+    request_type: str
+        リクエストタイプ．
+    """
+    request_type = ""
+    try:
+        request_type = dictionary["type"]
+    except KeyError as e:
+        print("catch KeyError: ", e)
+    return request_type
+
+
+def get_callback_id(dictionary, request_type):
+    """
+    コールバックIDを取得する．
+
+    Parameters
+    ----------
+    dictionary: dict
+        payloadをdict型にエンコードしたもの．
+    request_type: str
+        リクエストタイプ．
+
+    Returns
+    ----------
+    callback_id: str
+        コールバックID．
+    """
+    if request_type == "shortcut":
+        callback_id = dictionary["callback_id"]
+    elif request_type == "view_submission":
+        callback_id = dictionary["view"]["callback_id"]
+    else:
+        callback_id = ""
+    return callback_id
+
+
 @app.get("/")
 async def say_hello():
     return {"Hello": "World"}
@@ -26,7 +74,9 @@ async def say_hello():
 @app.post("/")
 async def create_response(payload: myclass.Payload):
     encoded_payload = jsonable_encoder(payload)
-    print(type(encoded_payload))
+    request_type = get_request_type(encoded_payload)
+    callback_id = get_callback_id(encoded_payload, request_type)
+    print(callback_id)
     return JSONResponse(content=encoded_payload)
 
 
