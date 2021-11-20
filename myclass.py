@@ -35,3 +35,13 @@ class Payload(BaseModel):
     response_url: str
     message_ts: str
     message: _Message
+
+
+class UserName(BaseModel):
+    first_name: str
+    last_name: str
+
+
+class User(BaseModel):
+    user_id: int
+    user_name: UserName

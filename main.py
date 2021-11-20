@@ -1,22 +1,11 @@
 from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
-# from starlette.routing import request_response  # リクエストbodyを定義するために必要
+
 
 import myclass
 
 app = FastAPI()
-
-
-class UserName(BaseModel):
-    first_name: str
-    last_name: str
-
-
-class User(BaseModel):
-    user_id: int
-    user_name: UserName
 
 
 def get_request_type(dictionary):
@@ -92,5 +81,5 @@ async def get_user():
 
 
 @app.post("/test")
-async def create_user(user: User):
+async def create_user(user: myclass.User):
     return user
