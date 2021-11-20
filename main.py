@@ -18,6 +18,11 @@ class User(BaseModel):
     user_name: UserName
 
 
+@app.get("/")
+async def say_hello():
+    return {"Hello": "World"}
+
+
 @app.post("/")
 async def create_response(payload: myclass.Payload):
     encoded_payload = jsonable_encoder(payload)
